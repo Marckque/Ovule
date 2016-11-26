@@ -67,7 +67,7 @@ public class BoidsManager : MonoBehaviour
     private float m_CurrentArriveFactor;
     private float m_CurrentMinimumDistanceToOtherBoid;
 
-    [Header("NoNameYet")]
+    [Header("Target")]
     [SerializeField]
     private Transform m_Target;
     [SerializeField, Range(0, 3)]
@@ -77,7 +77,7 @@ public class BoidsManager : MonoBehaviour
     [SerializeField]
     private Transform m_BoidsContainer;
     [SerializeField]
-    private Boid m_BoidPrefab;
+    private Boid m_Boid;
     [SerializeField]
     private int m_NumberOfBoids = 1;
 
@@ -120,6 +120,7 @@ public class BoidsManager : MonoBehaviour
 
     private void CreateBoids()
     {
+        
         float radius = 0.5f;
         float xOffset = 0;
         float yOffset = 0;
@@ -130,7 +131,7 @@ public class BoidsManager : MonoBehaviour
             Vector3 offset = new Vector3(Random.Range(-radius, radius), 0, Random.Range(-radius, radius));
             Vector3 newPosition = transform.position + offset;
 
-            GameObject boid = Instantiate(m_BoidPrefab.gameObject, newPosition, Quaternion.identity) as GameObject;
+            GameObject boid = Instantiate(m_Boid.gameObject, newPosition, Quaternion.identity) as GameObject;
             boid.transform.SetParent(m_BoidsContainer);
 
             Boid boidBehaviour = boid.GetComponent<Boid>();
@@ -141,6 +142,17 @@ public class BoidsManager : MonoBehaviour
             boidBehaviour.DetermineIfCompatible();
             m_Boids.Add(boidBehaviour);
         }
+        
+        /*
+            Vector3 spawnPosition = Vector3.zero;
+            Boid boid = (Boid)Instantiate(m_Boid, spawnPosition, Quaternion.identity);
+
+            boid.SetMovementModifiers(m_AccelerationFactor, m_DecelerationFactor, m_MaxVelocity, m_MaxSteeringForce);
+            boid.SetBehaviorModifiers(m_MinimumDistanceToTarget, m_AvoidanceFactor, m_MinimumDistanceToOtherBoid, m_ArriveFactor);
+            boid.SetCurrentBehaviour(m_BoidsBehaviour);
+            boid.DetermineIfCompatible();
+            m_Boids.Add(boid);
+        */
     }
     #endregion Initialise
 

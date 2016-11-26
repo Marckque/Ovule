@@ -5,22 +5,22 @@ public class Boid : MonoBehaviour
 {
     #region Variables    
     // Movement
-    private float m_AccelerationFactor;
-    private float m_DecelerationFactor;
-    private float m_MaxSteeringForce;
-    private float m_MaxVelocity;
-    private float m_CurrentMaxSpeed;
+    private float m_AccelerationFactor = 1f;
+    private float m_DecelerationFactor = 1f;
+    private float m_MaxSteeringForce = 1f;
+    private float m_MaxVelocity = 1f;
+    private float m_CurrentMaxSpeed = 1f;
 
     // Behavior modifiers
-    private float m_ArriveFactor;
-    private float m_AvoidanceFactor;
-    private float m_MinimumDistanceToTarget;
-    private float m_MinimumDistanceToOtherBoid;
+    private float m_ArriveFactor = 1f;
+    private float m_AvoidanceFactor = 1f;
+    private float m_MinimumDistanceToTarget = 1f;
+    private float m_MinimumDistanceToOtherBoid = 1f;
     
     // Other
     public enum CurrentBehaviour {None, Arrive, Flow, Path};
     private CurrentBehaviour m_CurrentBehaviour;
-    private Transform m_Target;
+    private Vector3 m_Target;
     private Vector3 m_Acceleration;
     private Vector3 m_CurrentVelocity;
 
@@ -77,12 +77,12 @@ public class Boid : MonoBehaviour
 
     public void SetTarget(Transform a_Target)
     {
-        m_Target = a_Target;
+        m_Target = a_Target.position;
     }
 
     public void SetTargetByPosition(Vector3 a_TargetPosition)
     {
-        m_Target.position = a_TargetPosition;
+        m_Target = a_TargetPosition;
     }
     #endregion DefineVariables
 
@@ -164,7 +164,7 @@ public class Boid : MonoBehaviour
 
     private Vector3 Arrive()
     {
-        Vector3 targetDirection = m_Target.transform.position - transform.position;
+        Vector3 targetDirection = m_Target - transform.position;
         float distanceToTarget = targetDirection.sqrMagnitude;
         m_CurrentMaxSpeed = 0;
         
