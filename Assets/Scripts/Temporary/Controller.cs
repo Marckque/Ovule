@@ -15,8 +15,17 @@ public class Controller : MonoBehaviour
     private float m_DecelerationTime;
     private float m_VelocityTime;
     private float m_Velocity;
-    private Vector3 m_CurrentInput;
-    private Vector3 m_LastInput;
+    private Vector3 m_CurrentLeftInput;
+    private Vector3 m_LastLeftInput;
+
+    [Header("Target"), SerializeField]
+    private Transform m_Target;
+    [SerializeField]
+    private float m_DistanceModifier;
+    [SerializeField]
+    private float m_TargetLerpSpeed;
+
+    private Vector3 m_CurrentRightInput;
     #endregion Variables
 
     #region CheckControls
@@ -27,20 +36,21 @@ public class Controller : MonoBehaviour
 
     private void CheckControls()
     {
-        Movement();
+        ControllerMovement();
+        TargetMovement();
     }
     #endregion CheckControls
 
     #region ControllerControls
-    private void Movement()
+    private void ControllerMovement()
     {
-        m_CurrentInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+        m_CurrentLeftInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
 
-        if (m_CurrentInput != Vector3.zero)
+        if (m_CurrentLeftInput != Vector3.zero)
         {
             m_DecelerationTime = 0;
             m_AccelerationTime += Time.deltaTime;
-            m_LastInput = m_CurrentInput;
+            m_LastLeftInput = m_CurrentLeftInput;
         }
         else
         {
@@ -48,43 +58,33 @@ public class Controller : MonoBehaviour
             m_DecelerationTime += Time.deltaTime;
         }
 
-        m_VelocityCurve = m_CurrentInput != Vector3.zero ? m_AccelerationCurve : m_DecelerationCurve;
+        m_VelocityCurve = m_CurrentLeftInput != Vector3.zero ? m_AccelerationCurve : m_DecelerationCurve;
         m_VelocityTime = m_AccelerationTime > 0 ? m_AccelerationTime : m_DecelerationTime;
 
         m_Velocity = m_MaxVelocity * m_VelocityCurve.Evaluate(m_VelocityTime);
 
-        transform.Translate(m_LastInput.normalized * m_Velocity * Time.deltaTime);
+        transform.Translate(m_LastLeftInput.normalized * m_Velocity * Time.deltaTime);
     }
 
     #endregion ControllerControls
-    /*
+
     #region TargetControls
-    private void Aim()
+    private void TargetMovement()
     {
-        float inputX = Input.GetAxis("R_XAxis_1");
-        float inputZ = -Input.GetAxis("R_YAxis_1");
-        Vector3 newPosition = new Vector3(inputX, 0, inputZ);
+        m_CurrentRightInput = new Vector3(Input.GetAxis("R_XAxis_1"), 0f, -Input.GetAxis("R_YAxis_1"));
+        Vector3 newPosition = m_CurrentRightInput.normalized * m_DistanceModifier;
 
-        MoveTarget(newPosition);
-        //Attack(newPosition);
-    }
-
-    private void MoveTarget(Vector3 a_NewPosition)
-    {
-        if (a_NewPosition != Vector3.zero)
+        if (newPosition != Vector3.zero)
         {
-            a_NewPosition *= m_DistanceModifier;
-            m_Target.transform.localPosition = Vector3.LerpUnclamped(m_Target.transform.localPosition, a_NewPosition, m_TargetLerpSpeed * Time.deltaTime);
+            m_Target.localPosition = Vector3.LerpUnclamped(m_Target.transform.localPosition, newPosition, m_TargetLerpSpeed * Time.deltaTime);
         }
         else
         {
-            if (m_Target.transform.position != Vector3.zero)
-            {
-                m_Target.transform.localPosition = Vector3.LerpUnclamped(m_Target.transform.localPosition, Vector3.zero, m_TargetLerpSpeed * Time.deltaTime);
-            }
+            m_Target.localPosition = Vector3.LerpUnclamped(m_Target.localPosition, Vector3.zero, m_TargetLerpSpeed * Time.deltaTime);
         }
     }
-
+  
+    /*
     private void Attack(Vector3 a_NewPosition)
     {
         if (m_CurrentCooldown > 0)
@@ -105,6 +105,6 @@ public class Controller : MonoBehaviour
             }
         }
     }
-    #endregion TargetControls
     */
+    #endregion TargetControls
 }
