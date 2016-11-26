@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Debug : MonoBehaviour
+public class Debugging : MonoBehaviour
 {
 	protected void Start()
     {

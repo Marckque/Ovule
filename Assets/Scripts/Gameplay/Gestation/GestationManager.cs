@@ -42,6 +42,7 @@ public class BabyManager : MonoBehaviour
         }
         else
         {
+            SetFoetusToActive();
             UpdateRemainingDays(differenceOfDays);
         }
     }
@@ -64,8 +65,6 @@ public class BabyManager : MonoBehaviour
 
     private void UpdateRemainingDays(int a_DifferenceOfDays)
     {
-        SetFoetusToActive();
-
         int remainingDays = PERIOD_OF_GESTATION - a_DifferenceOfDays;
         m_RemainingDaysText.text = remainingDays + m_RemainingDaysString;
 

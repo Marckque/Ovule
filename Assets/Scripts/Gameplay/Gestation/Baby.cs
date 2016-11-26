@@ -2,5 +2,8 @@
 
 public class Baby : MonoBehaviour
 {
-
+    void Start()
+    {
+        
+    }
 }
