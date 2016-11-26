@@ -3,31 +3,20 @@
 public class Controller : MonoBehaviour
 {
     #region Variables
-    [Header("Controller")]
-    [SerializeField, Range(10f, 40f)]
-    private float m_ControllerLerpSpeed;
-    [SerializeField, Range(1f, 20f)]
-    private float m_SlowVelocity;
-    [SerializeField, Range(1f, 20f)]
-    private float m_DefaultVelocity;
-    [SerializeField, Range(1f, 20f)]
-    private float m_FastVelocity;
-    [SerializeField, Range(0.5f, 5f)]
-    private float m_AttackCooldown;
-
-    private float m_CurrentCooldown;
-
-    [Header("Target")]
+    [Header("Movement"), SerializeField]
+    private float m_MaxVelocity;
     [SerializeField]
-    private Transform m_Target;
-    [SerializeField, Range(1f, 40f)]
-    private float m_TargetLerpSpeed;
-    [SerializeField, Range(1f, 20f)]
-    private float m_DistanceModifier;
-    [SerializeField, Range(1f, 20f)]
-    private float m_AttackRange;
+    private AnimationCurve m_AccelerationCurve;
+    [SerializeField]
+    private AnimationCurve m_DecelerationCurve;
 
-    private float m_CurrentVelocity;
+    private AnimationCurve m_VelocityCurve;
+    private float m_AccelerationTime;
+    private float m_DecelerationTime;
+    private float m_VelocityTime;
+    private float m_Velocity;
+    private Vector3 m_CurrentInput;
+    private Vector3 m_LastInput;
     #endregion Variables
 
     #region CheckControls
@@ -38,55 +27,37 @@ public class Controller : MonoBehaviour
 
     private void CheckControls()
     {
-        ControllerControls();
-        TargetControls();
-    }
-
-    private void ControllerControls()
-    {
         Movement();
-        Formations();
-    }
-
-    private void TargetControls()
-    {
-        Aim();
     }
     #endregion CheckControls
 
     #region ControllerControls
     private void Movement()
     {
-        float inputX = Input.GetAxis("L_XAxis_1");
-        float inputZ = Input.GetAxis("L_YAxis_1");
+        m_CurrentInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
 
-        Vector3 direction = new Vector3(inputX, 0, inputZ);
-
-        if (direction != Vector3.zero)
+        if (m_CurrentInput != Vector3.zero)
         {
-            transform.position = Vector3.LerpUnclamped(transform.position, transform.position + (direction * m_CurrentVelocity * Time.deltaTime), m_ControllerLerpSpeed * Time.deltaTime);
+            m_DecelerationTime = 0;
+            m_AccelerationTime += Time.deltaTime;
+            m_LastInput = m_CurrentInput;
         }
+        else
+        {
+            m_AccelerationTime = 0;
+            m_DecelerationTime += Time.deltaTime;
+        }
+
+        m_VelocityCurve = m_CurrentInput != Vector3.zero ? m_AccelerationCurve : m_DecelerationCurve;
+        m_VelocityTime = m_AccelerationTime > 0 ? m_AccelerationTime : m_DecelerationTime;
+
+        m_Velocity = m_MaxVelocity * m_VelocityCurve.Evaluate(m_VelocityTime);
+
+        transform.Translate(m_LastInput.normalized * m_Velocity * Time.deltaTime);
     }
 
-    private void Formations()
-    {
-        if (!Input.GetButton("LB_1") || Input.GetAxisRaw("TL_1") == 0)
-        {
-            m_CurrentVelocity = m_DefaultVelocity;
-        }
-
-        if (Input.GetButton("LB_1"))
-        {
-            m_CurrentVelocity = m_SlowVelocity;
-        }
-
-        if (Input.GetAxisRaw("TL_1") > 0)
-        {
-            m_CurrentVelocity = m_FastVelocity;
-        }
-    }
     #endregion ControllerControls
-
+    /*
     #region TargetControls
     private void Aim()
     {
@@ -95,7 +66,7 @@ public class Controller : MonoBehaviour
         Vector3 newPosition = new Vector3(inputX, 0, inputZ);
 
         MoveTarget(newPosition);
-        Attack(newPosition);
+        //Attack(newPosition);
     }
 
     private void MoveTarget(Vector3 a_NewPosition)
@@ -135,15 +106,5 @@ public class Controller : MonoBehaviour
         }
     }
     #endregion TargetControls
-
-    private void OnDrawGizmos()
-    {
-        // Draw attack sphere
-        float inputX = Input.GetAxis("R_XAxis_1");
-        float inputZ = -Input.GetAxis("R_YAxis_1");
-        Vector3 newPosition = new Vector3(inputX, 0, inputZ);
-
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(m_Target.transform.position + newPosition * m_AttackRange, 0.5f);
-    }
+    */
 }
