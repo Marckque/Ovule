@@ -138,6 +138,7 @@ public class BoidsManager : MonoBehaviour
             boidBehaviour.SetMovementModifiers(m_AccelerationFactor, m_DecelerationFactor, m_MaxVelocity, m_MaxSteeringForce);
             boidBehaviour.SetBehaviorModifiers(m_MinimumDistanceToTarget, m_AvoidanceFactor, m_MinimumDistanceToOtherBoid, m_ArriveFactor);
             boidBehaviour.SetCurrentBehaviour(m_BoidsBehaviour);
+            boidBehaviour.DetermineIfCompatible();
             m_Boids.Add(boidBehaviour);
         }
     }

@@ -83,28 +83,5 @@ public class Controller : MonoBehaviour
             m_Target.localPosition = Vector3.LerpUnclamped(m_Target.localPosition, Vector3.zero, m_TargetLerpSpeed * Time.deltaTime);
         }
     }
-  
-    /*
-    private void Attack(Vector3 a_NewPosition)
-    {
-        if (m_CurrentCooldown > 0)
-        {
-            m_CurrentCooldown -= Time.deltaTime;
-        }
-        else 
-        {
-            if (Input.GetButtonDown("RB_1"))
-            {
-                m_CurrentCooldown = m_AttackCooldown;
-
-                foreach (Boid boids in BoidsManager.Instance.Boids)
-                {
-                    boids.GetTrailRenderer.Clear();
-                    boids.transform.position = (m_Target.transform.position + a_NewPosition * m_AttackRange);
-                }
-            }
-        }
-    }
-    */
     #endregion TargetControls
 }

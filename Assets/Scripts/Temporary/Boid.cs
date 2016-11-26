@@ -233,6 +233,20 @@ public class Boid : MonoBehaviour
 
     public void Dies()
     {
+        BoidsManager.Instance.Boids.Remove(this);
+        Destroy(gameObject);
+    }
 
+    public void DetermineIfCompatible()
+    {
+        int randomNumber = Random.Range(0, 10);
+        if (randomNumber < 2)
+        {
+            IsCompatible = true;
+        }
+        else
+        {
+            IsCompatible = false;
+        }
     }
 }
