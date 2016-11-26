@@ -6,9 +6,9 @@ using System.Collections;
 public class BabyManager : MonoBehaviour
 {
     [Header("Baby & Foetus"), SerializeField]
-    private GameObject m_Baby;
+    private Baby m_Baby;
     [SerializeField]
-    private GameObject m_Foetus;
+    private Foetus m_Foetus;
 
     [Header("Text"), SerializeField]
     private Text m_RemainingDaysText;
@@ -55,12 +55,12 @@ public class BabyManager : MonoBehaviour
 
     private void SetBabyToActive()
     {
-        m_Baby.SetActive(true);
+        m_Baby.gameObject.SetActive(true);
     }
 
     private void SetFoetusToActive()
     {
-        m_Foetus.SetActive(true);
+        m_Foetus.gameObject.SetActive(true);
     }
 
     private void UpdateRemainingDays(int a_DifferenceOfDays)
