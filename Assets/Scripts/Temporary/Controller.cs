@@ -4,7 +4,11 @@ public class Controller : MonoBehaviour
 {
     #region Variables
     [Header("Movement"), SerializeField]
-    private float m_MaxVelocity;
+    private float m_CloseVelocity;
+    [SerializeField]
+    private float m_NormalVelocity;
+    [SerializeField]
+    private float m_LargeVelocity;
     [SerializeField]
     private AnimationCurve m_AccelerationCurve;
     [SerializeField]
@@ -14,6 +18,7 @@ public class Controller : MonoBehaviour
     private float m_AccelerationTime;
     private float m_DecelerationTime;
     private float m_VelocityTime;
+    private float m_MaxVelocity;
     private float m_Velocity;
     private Vector3 m_CurrentLeftInput;
     private Vector3 m_LastLeftInput;
@@ -44,6 +49,8 @@ public class Controller : MonoBehaviour
     #region ControllerControls
     private void ControllerMovement()
     {
+        UpdateMaxVelocity();
+
         m_CurrentLeftInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
 
         if (m_CurrentLeftInput != Vector3.zero)
@@ -66,6 +73,21 @@ public class Controller : MonoBehaviour
         transform.Translate(m_LastLeftInput.normalized * m_Velocity * Time.deltaTime);
     }
 
+    private void UpdateMaxVelocity()
+    {
+        if (Input.GetButton("LB_1"))
+        {
+            m_MaxVelocity = m_CloseVelocity;
+        }
+        else if (Input.GetAxisRaw("TL_1") > 0)
+        {
+            m_MaxVelocity = m_LargeVelocity;
+        }
+        else
+        {
+            m_MaxVelocity = m_NormalVelocity;
+        }
+    }
     #endregion ControllerControls
 
     #region TargetControls
