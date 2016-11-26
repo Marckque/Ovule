@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameStarter : MonoBehaviour
+public class OpeningManager : MonoBehaviour
 {
 	protected void Start()
     {
@@ -12,7 +12,7 @@ public class GameStarter : MonoBehaviour
     {
         if (SaveLoad.Load())
         {
-            SceneManager.LoadScene("Baby");
+            SceneManager.LoadScene("Gestation");
         }
         else
         {
