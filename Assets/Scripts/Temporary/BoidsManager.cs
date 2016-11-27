@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class BoidsManager : MonoBehaviour
 {
     #region Variables
+
+    #region BoidVariables
     [Header("Standard boid")]
     [SerializeField, Range(0.1f, 2f)]
     private float m_AccelerationFactor = 0.1f;
@@ -58,6 +60,7 @@ public class BoidsManager : MonoBehaviour
     private float m_CloseArriveFactor = 0.1f;
     [SerializeField, Range(-100, 200)]
     private float m_CloseMinimumDistanceToOtherBoid = 0.1f;
+    #endregion BoidVariables
 
     private float m_CurrentAccelerationFactor;
     private float m_CurrentDecelerationFactor;
@@ -68,25 +71,26 @@ public class BoidsManager : MonoBehaviour
     private float m_CurrentArriveFactor;
     private float m_CurrentMinimumDistanceToOtherBoid;
 
-    [Header("Target")]
+    [Header("Controller")]
     [SerializeField]
-    private Transform m_Target;
-    [SerializeField, Range(0, 3)]
-    private int m_BoidsBehaviour;
+    private Transform m_ControllerTarget;
 
     [Header("Manager parameters")]
     [SerializeField]
-    private Transform m_BoidsContainer;
-    [SerializeField]
     private Boid m_Boid;
     [SerializeField]
+    private Transform m_BoidsContainer;
+    [SerializeField]
     private int m_NumberOfBoids = 1;
+    [SerializeField, Range(0, 3)]
+    private int m_BoidsBehaviour;
 
     [Header("Spawn"), SerializeField, Range(0, 1)]
     private int m_SpawnMethod;
     [SerializeField]
     private float m_DistanceOfTargets = 1f;
-
+    [SerializeField]
+    private Transform m_TargetsHeight;
     
     [Header("Continous flow"), SerializeField]
     private float m_SpawnDuration;
@@ -95,6 +99,12 @@ public class BoidsManager : MonoBehaviour
     private float m_SpawnBurstDelay;
     [SerializeField]
     private int m_NumberOfBursts;
+
+    [Header("End initialisation"), SerializeField]
+    private Controller m_Controller;
+    [SerializeField]
+    private GameObject m_Penis;
+
 
     private bool m_InitialisationIsOver;
     private float m_SpawnDelay;
@@ -152,7 +162,7 @@ public class BoidsManager : MonoBehaviour
 
             m_DistanceOfTargets += Random.Range(-1f, 1f); // Find a better way dude
 
-            m_Targets[i] = new Vector3(center.x + x, 0f, center.z + z);
+            m_Targets[i] = new Vector3(center.x + x, m_TargetsHeight.position.y, center.z + z);
             Debug.DrawLine(center, m_Targets[i], Color.cyan, 10f);
         }
 
@@ -199,11 +209,12 @@ public class BoidsManager : MonoBehaviour
         }
 
         m_InitialisationIsOver = true;
+        EndInitialisation();
     }
 
     private void CreateBoids()
     {
-        Boid boid = (Boid)Instantiate(m_Boid, Vector3.zero, Quaternion.identity);
+        Boid boid = (Boid)Instantiate(m_Boid, new Vector3(0f, m_TargetsHeight.position.y, 0f), Quaternion.identity);
         boid.transform.SetParent(m_BoidsContainer);
         boid.SetTargetByPosition(m_UnusedTargets[0]);
         boid.SetMovementModifiers(m_AccelerationFactor, m_DecelerationFactor, m_MaxVelocity, m_MaxSteeringForce);
@@ -214,6 +225,13 @@ public class BoidsManager : MonoBehaviour
         Boids.Add(boid);
     }
 
+    private void EndInitialisation()
+    {
+        m_Controller.enabled = true;
+        m_Penis.GetComponent<Animator>().SetBool("Out", true);
+        m_Penis.SetActive(true);
+    }
+
     #endregion Initialise
 
     protected void Update()
@@ -222,7 +240,7 @@ public class BoidsManager : MonoBehaviour
         {
             if (m_InitialisationIsOver)
             {
-                boid.SetTarget(m_Target);
+                boid.SetTarget(m_ControllerTarget);
             }
                 
             boid.UpdateBehaviour(m_Boids);

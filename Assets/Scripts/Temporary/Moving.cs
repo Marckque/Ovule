@@ -31,7 +31,7 @@ public class Moving : MonoBehaviour
         }
     }
 
-    private void SetCurrentDestination()
+    private void SetCurrentDestination() // What ? 
     {
         bool newDestination = m_CurrentDestination == m_StartPosition ?
             m_CurrentDestination = m_EndPosition : m_CurrentDestination = m_StartPosition;

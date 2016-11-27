@@ -4,12 +4,11 @@ using UnityEngine.SceneManagement;
 
 public class DefeatManager : MonoBehaviour
 {
+    /*
     [SerializeField]
     private Transform m_BoidsContainer;
     [SerializeField]
     private Animator m_SceneTransitionAnimator;
-
-    public SceneTransition m_SceneTransition;
 
     private const float DEFEAT_CHECK_TIMER = 0.25f;
     private bool m_Defeat;
@@ -36,7 +35,8 @@ public class DefeatManager : MonoBehaviour
 
     private void Defeat()
     {
-        m_SceneTransition.GetCanvasGameObject.SetActive(true);
+        print("Defeat");
+
         m_SceneTransition.GetAnimator.SetTrigger("FadeOut");
 
         StartCoroutine(ReloadScene());
@@ -47,4 +47,5 @@ public class DefeatManager : MonoBehaviour
         yield return new WaitForSeconds(2f);
         SceneManager.LoadScene("Game");
     }
+    */
 }
