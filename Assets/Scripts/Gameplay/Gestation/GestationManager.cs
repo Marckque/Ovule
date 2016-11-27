@@ -3,12 +3,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-public class BabyManager : MonoBehaviour
+public class GestationManager : MonoBehaviour
 {
     [Header("Baby & Foetus"), SerializeField]
-    private Baby m_Baby;
+    private GameObject m_Baby;
     [SerializeField]
-    private Foetus m_Foetus;
+    private GameObject m_Foetus;
 
     [Header("Text"), SerializeField]
     private Text m_RemainingDaysText;
@@ -42,7 +42,6 @@ public class BabyManager : MonoBehaviour
         }
         else
         {
-            SetFoetusToActive();
             UpdateRemainingDays(differenceOfDays);
         }
     }
@@ -55,16 +54,18 @@ public class BabyManager : MonoBehaviour
 
     private void SetBabyToActive()
     {
-        m_Baby.gameObject.SetActive(true);
+        m_Baby.SetActive(true);
     }
 
     private void SetFoetusToActive()
     {
-        m_Foetus.gameObject.SetActive(true);
+        m_Foetus.SetActive(true);
     }
 
     private void UpdateRemainingDays(int a_DifferenceOfDays)
     {
+        SetFoetusToActive();
+
         int remainingDays = PERIOD_OF_GESTATION - a_DifferenceOfDays;
         m_RemainingDaysText.text = remainingDays + m_RemainingDaysString;
 

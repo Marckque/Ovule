@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Oocyte : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject m_FadeToBlack;
+
     protected void OnTriggerEnter(Collider other)
     {
         Boid boid = other.GetComponent<Boid>();
@@ -25,6 +27,6 @@ public class Oocyte : MonoBehaviour
         Manager.Instance.m_BabyIsOnItsWay = true;
         SaveLoad.Save();
 
-        SceneManager.LoadScene("Gestation");
+        m_FadeToBlack.SetActive(true);
     }
 }

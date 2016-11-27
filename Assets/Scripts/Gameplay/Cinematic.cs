@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
 
-public class TriggerScripts : MonoBehaviour
+public class Cinematic : MonoBehaviour
 {
+    [Header("Cinematic setting"), SerializeField]
+    private bool m_DeactivateSelfOnCompletion = true;
+
     [Header("Animator"), SerializeField]
     protected Animator m_Animator;
 
     [Header("Sounds"), SerializeField]
     protected AudioSource[] m_Sounds;
 
-    [SerializeField]
+    [Header("Affected items"), SerializeField]
     protected GameObject[] m_AffectedGameObjects;
 
     public Animator GetAnimator { get { return m_Animator; } }
@@ -23,7 +26,11 @@ public class TriggerScripts : MonoBehaviour
         if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && !m_Animator.IsInTransition(0))
         {
             Activate();
-            gameObject.SetActive(false);
+
+            if (m_DeactivateSelfOnCompletion)
+            {
+                gameObject.SetActive(false);
+            }
 
             if (m_Sounds.Length > 0)
             {
