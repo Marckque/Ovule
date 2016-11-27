@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class BoidsManager : MonoBehaviour
@@ -81,6 +82,25 @@ public class BoidsManager : MonoBehaviour
     [SerializeField]
     private int m_NumberOfBoids = 1;
 
+    [Header("Spawn"), SerializeField, Range(0, 1)]
+    private int m_SpawnMethod;
+    [SerializeField]
+    private float m_DistanceOfTargets = 1f;
+
+    
+    [Header("Continous flow"), SerializeField]
+    private float m_SpawnDuration;
+
+    [Header("Bursts"), SerializeField]
+    private float m_SpawnBurstDelay;
+    [SerializeField]
+    private int m_NumberOfBursts;
+
+    private bool m_InitialisationIsOver;
+    private float m_SpawnDelay;
+    private Vector3[] m_Targets;
+    private List<Vector3> m_UnusedTargets = new List<Vector3>();
+    
     private List<Boid> m_Boids = new List<Boid>();
     #endregion Variables
 
@@ -115,51 +135,96 @@ public class BoidsManager : MonoBehaviour
     #region Initialise
     protected void Start()
     {
-        CreateBoids();
+        InitialiseTargets();
+        InitialiseBoids();
 	}
+
+    private void InitialiseTargets()
+    {
+        int numberOfTargets = m_NumberOfBoids; 
+        m_Targets = new Vector3[numberOfTargets];
+        Vector3 center = Vector3.zero;
+
+        for (int i = 0; i < numberOfTargets; i++)
+        {
+            float x = m_DistanceOfTargets * Mathf.Cos(i);
+            float z = m_DistanceOfTargets * Mathf.Sin(i);
+
+            m_DistanceOfTargets += Random.Range(-1f, 1f); // Find a better way dude
+
+            m_Targets[i] = new Vector3(center.x + x, 0f, center.z + z);
+            Debug.DrawLine(center, m_Targets[i], Color.cyan, 10f);
+        }
+
+        foreach (Vector3 v in m_Targets)
+        {
+            m_UnusedTargets.Add(v);
+        }
+    }
+
+    private void InitialiseBoids()
+    {
+        StartCoroutine(CreateBoidsMethod());
+    }
+
+    private IEnumerator CreateBoidsMethod()
+    {
+        switch(m_SpawnMethod)
+        {
+            // Continous flow
+            case 0:
+                m_SpawnDelay = m_SpawnDuration / m_NumberOfBoids;
+
+                for (int i = 0; i < m_NumberOfBoids; i++)
+                {
+                    CreateBoids();
+                    yield return new WaitForSeconds(m_SpawnDelay);
+                }
+                break;
+
+            // Bursts
+            case 1:
+                int bursts = m_NumberOfBoids / m_NumberOfBursts;
+
+                for (int i = 0; i < bursts; i++)
+                {
+                    for (int j = 0; j < bursts; j++)
+                    {
+                        CreateBoids();
+                    }
+
+                    yield return new WaitForSeconds(m_SpawnBurstDelay);
+                }
+                break;
+        }
+
+        m_InitialisationIsOver = true;
+    }
 
     private void CreateBoids()
     {
-        
-        float radius = 0.5f;
-        float xOffset = 0;
-        float yOffset = 0;
-
-        for (int i = 0; i < m_NumberOfBoids; i++)
-        {
-            radius += Mathf.PerlinNoise(xOffset, yOffset);
-            Vector3 offset = new Vector3(Random.Range(-radius, radius), 0, Random.Range(-radius, radius));
-            Vector3 newPosition = transform.position + offset;
-
-            GameObject boid = Instantiate(m_Boid.gameObject, newPosition, Quaternion.identity) as GameObject;
-            boid.transform.SetParent(m_BoidsContainer);
-
-            Boid boidBehaviour = boid.GetComponent<Boid>();
-            boidBehaviour.SetTarget(m_Target);
-            boidBehaviour.SetMovementModifiers(m_AccelerationFactor, m_DecelerationFactor, m_MaxVelocity, m_MaxSteeringForce);
-            boidBehaviour.SetBehaviorModifiers(m_MinimumDistanceToTarget, m_AvoidanceFactor, m_MinimumDistanceToOtherBoid, m_ArriveFactor);
-            boidBehaviour.SetCurrentBehaviour(m_BoidsBehaviour);
-            boidBehaviour.DetermineIfCompatible();
-            m_Boids.Add(boidBehaviour);
-        }
-        
-        /*
-            Vector3 spawnPosition = Vector3.zero;
-            Boid boid = (Boid)Instantiate(m_Boid, spawnPosition, Quaternion.identity);
-
-            boid.SetMovementModifiers(m_AccelerationFactor, m_DecelerationFactor, m_MaxVelocity, m_MaxSteeringForce);
-            boid.SetBehaviorModifiers(m_MinimumDistanceToTarget, m_AvoidanceFactor, m_MinimumDistanceToOtherBoid, m_ArriveFactor);
-            boid.SetCurrentBehaviour(m_BoidsBehaviour);
-            boid.DetermineIfCompatible();
-            m_Boids.Add(boid);
-        */
+        Boid boid = (Boid)Instantiate(m_Boid, Vector3.zero, Quaternion.identity);
+        boid.transform.SetParent(m_BoidsContainer);
+        boid.SetTargetByPosition(m_UnusedTargets[0]);
+        boid.SetMovementModifiers(m_AccelerationFactor, m_DecelerationFactor, m_MaxVelocity, m_MaxSteeringForce);
+        boid.SetBehaviorModifiers(m_MinimumDistanceToTarget, m_AvoidanceFactor, m_MinimumDistanceToOtherBoid, m_ArriveFactor);
+        boid.SetCurrentBehaviour(1);
+        boid.DetermineIfCompatible();
+        m_UnusedTargets.RemoveAt(0);
+        Boids.Add(boid);
     }
+
     #endregion Initialise
 
     protected void Update()
     {
         foreach (Boid boid in m_Boids)
         {
+            if (m_InitialisationIsOver)
+            {
+                boid.SetTarget(m_Target);
+            }
+                
             boid.UpdateBehaviour(m_Boids);
         }
 

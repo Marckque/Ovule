@@ -22,48 +22,12 @@ public class BoidsCreator : MonoBehaviour
     [SerializeField, Range(0.1f, 10f)]
     private float m_MinimumDistanceToOtherBoid = 0.1f;
 
-    /*
-    [Header("Close boid")]
-    [SerializeField, Range(-100, 200)]
-    private float m_LargeAccelerationFactor = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_LargeDecelerationFactor = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_LargeMaxVelocity = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_LargeMaxSteeringForce = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_LargeMinimumDistanceToTarget = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_LargeAvoidanceFactor = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_LargeArriveFactor = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_LargeMinimumDistanceToOtherBoid = 0.1f;
-
-    [Header("Large boid")]
-    [SerializeField, Range(-100, 200)]
-    private float m_CloseAccelerationFactor = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_CloseDecelerationFactor = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_CloseMaxVelocity = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_CloseMaxSteeringForce = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_CloseMinimumDistanceToTarget = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_CloseAvoidanceFactor = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_CloseArriveFactor = 0.1f;
-    [SerializeField, Range(-100, 200)]
-    private float m_CloseMinimumDistanceToOtherBoid = 0.1f;
-    */
-
     [Header("Boids"), SerializeField]
     private Boid m_Boid;
 
     [Header("Boids initialisation"), SerializeField]
+    private bool m_SpawnMethod;
+    [SerializeField]
     private int m_NumberOfBoids = 1;
     [SerializeField]
     private float m_SpawnDelay = 0.5f;
@@ -78,6 +42,10 @@ public class BoidsCreator : MonoBehaviour
     private float m_DistanceOfTargets;
     private Vector3[] m_Targets;
     private List<Vector3> m_UnusedTargets = new List<Vector3>();
+
+    bool osef;
+
+    public Transform target;
 
     public List<Boid> Boids { get; set; }
 
@@ -113,30 +81,59 @@ public class BoidsCreator : MonoBehaviour
 
     private IEnumerator InitialiseBoids()
     {
-        for (int i = 0; i < m_NumberOfBoids; i++)
+        if (m_SpawnMethod)
         {
-            Boid boid = (Boid) Instantiate(m_Boid, Vector3.zero, Quaternion.identity);
-            boid.transform.SetParent(m_BoidsContainer);
-            boid.SetTargetByPosition(m_UnusedTargets[0]);
-            boid.SetMovementModifiers(m_AccelerationFactor, m_DecelerationFactor, m_MaxVelocity, m_MaxSteeringForce);
-            boid.SetBehaviorModifiers(m_MinimumDistanceToTarget, m_AvoidanceFactor, m_MinimumDistanceToOtherBoid, m_ArriveFactor);
-            boid.SetCurrentBehaviour(1);
-            boid.DetermineIfCompatible();
-            m_UnusedTargets.RemoveAt(0);
-            Boids.Add(boid);
-            yield return new WaitForSeconds(m_SpawnDelay);
+            for (int i = 0; i < m_NumberOfBoids; i++)
+            {
+                Boid boid = (Boid)Instantiate(m_Boid, Vector3.zero, Quaternion.identity);
+                boid.transform.SetParent(m_BoidsContainer);
+                boid.SetTargetByPosition(m_UnusedTargets[0]);
+                boid.SetMovementModifiers(m_AccelerationFactor, m_DecelerationFactor, m_MaxVelocity, m_MaxSteeringForce);
+                boid.SetBehaviorModifiers(m_MinimumDistanceToTarget, m_AvoidanceFactor, m_MinimumDistanceToOtherBoid, m_ArriveFactor);
+                boid.SetCurrentBehaviour(1);
+                boid.DetermineIfCompatible();
+                m_UnusedTargets.RemoveAt(0);
+                Boids.Add(boid);
+                yield return new WaitForSeconds(m_SpawnDelay);
+            }
         }
+        else
+        {
+            int bursts = m_NumberOfBoids / 10;
 
+            for (int i = 0; i < bursts; i++)
+            {
+                for (int j = 0; j < bursts; j++)
+                {
+                    Boid boid = (Boid)Instantiate(m_Boid, Vector3.zero, Quaternion.identity);
+                    boid.transform.SetParent(m_BoidsContainer);
+                    boid.SetTargetByPosition(m_UnusedTargets[0]);
+                    boid.SetMovementModifiers(m_AccelerationFactor, m_DecelerationFactor, m_MaxVelocity, m_MaxSteeringForce);
+                    boid.SetBehaviorModifiers(m_MinimumDistanceToTarget, m_AvoidanceFactor, m_MinimumDistanceToOtherBoid, m_ArriveFactor);
+                    boid.SetCurrentBehaviour(1);
+                    boid.DetermineIfCompatible();
+                    m_UnusedTargets.RemoveAt(0);
+                    Boids.Add(boid);
+                }
+
+                yield return new WaitForSeconds(m_SpawnDuration);
+            }
+             
+        }
+            
         foreach(Boid boid in Boids)
         {
-            boid.SetTargetByPosition(Vector3.zero);
+            boid.SetTargetByPosition(target.position);
         }
+
+        osef = true;
     }
 
     private void Update()
     {
         foreach (Boid boid in Boids)
         {
+            if (osef) boid.SetTargetByPosition(target.position);
             boid.UpdateBehaviour(Boids);
         }
     }

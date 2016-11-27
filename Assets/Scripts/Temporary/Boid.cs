@@ -177,7 +177,6 @@ public class Boid : MonoBehaviour
             m_CurrentMaxSpeed = m_MaxVelocity;
         }
 
-        //targetDirection.Normalize();
         targetDirection *= m_CurrentMaxSpeed;
 
         targetDirection -= m_CurrentVelocity;
