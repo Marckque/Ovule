@@ -10,6 +10,7 @@ public class Boid : MonoBehaviour
     private float m_MaxSteeringForce = 1f;
     private float m_MaxVelocity = 1f;
     private float m_CurrentMaxSpeed = 1f;
+    private float m_VelocityMultiplier = 1f;
 
     // Behavior modifiers
     private float m_ArriveFactor = 1f;
@@ -25,20 +26,22 @@ public class Boid : MonoBehaviour
     private Vector3 m_CurrentVelocity;
 
     private Vector3 m_DesiredVelocity;
+
+    private List<Boid> m_OtherBoids = new List<Boid>();
     #endregion Variables
 
     #region PublicGetters
     public bool IsCompatible { get; set; }
-    public TrailRenderer GetTrailRenderer { get; set; }
     #endregion PublicGetters
 
     #region DefineVariables
-    public void SetMovementModifiers(float a_AccelerationFactor, float a_DecelerationFactor, float a_MaxVelocity, float a_MaxSteeringForce)
+    public void SetMovementModifiers(float a_AccelerationFactor, float a_DecelerationFactor, float a_MaxVelocity, float a_MaxSteeringForce, float a_VelocityMultiplier)
     {
         m_AccelerationFactor = a_AccelerationFactor;
         m_DecelerationFactor = a_DecelerationFactor;
         m_MaxVelocity = a_MaxVelocity;
         m_MaxSteeringForce = a_MaxSteeringForce;
+        m_VelocityMultiplier = a_VelocityMultiplier;
     }
 
     public void SetBehaviorModifiers(float a_MinimumDistanceToTarget, float a_AvoidanceFactor, float a_MinimumDistanceToOtherBoid, float a_ArriveFactor)
@@ -86,55 +89,28 @@ public class Boid : MonoBehaviour
     }
     #endregion DefineVariables
 
-    protected void Start()
-    {
-        GetTrailRenderer = GetComponentInChildren<TrailRenderer>();
-    }
-
     protected void Update()
     {
-        UpdatePosition();
-	}
-
-    private void OnTriggerEnter(Collider a_Collider)
-    {
-        BoidKiller boidKiller = a_Collider.GetComponent<BoidKiller>();
-
-        if (boidKiller != null)
-        {
-            BoidsManager.Instance.Boids.Remove(this);
-            Destroy(gameObject);
-        }
+        UpdateBehaviour();
+        CalculateCurrentVelocity();
     }
 
-    /*
-    private void UpdateCurrentBehaviour()
+    private void TranslatePosition(Vector3 a_NewVelocity)
     {
-        switch(m_CurrentBehaviour)
-        {
-            case CurrentBehaviour.Arrive:
-                break;
-
-            case CurrentBehaviour.Flow:
-                break;
-
-            case CurrentBehaviour.Path:
-                break;
-
-            case CurrentBehaviour.None:
-            default:
-                break;
-        }
+        transform.Translate(a_NewVelocity * m_VelocityMultiplier * Time.deltaTime);
     }
-    */
+
+    public void GetOtherBoids(List<Boid> a_Boids)
+    {
+        m_OtherBoids = a_Boids;
+    }
 
     #region VelocityCalculation
-    private void UpdatePosition()
+    private void CalculateCurrentVelocity()
     {
         m_CurrentVelocity += m_Acceleration;
         m_CurrentVelocity = Vector3.ClampMagnitude(m_CurrentVelocity, m_MaxVelocity);
-        transform.position = transform.position + m_CurrentVelocity;
-
+        TranslatePosition(m_CurrentVelocity);
         m_Acceleration = Vector3.zero;
     }
 
@@ -145,7 +121,7 @@ public class Boid : MonoBehaviour
     #endregion VelocityCalculation
 
     #region Behaviors
-    public void UpdateBehaviour(List<Boid> a_Boids)
+    public void UpdateBehaviour()
     {
         if (m_CurrentBehaviour == CurrentBehaviour.None)
         {
@@ -157,7 +133,7 @@ public class Boid : MonoBehaviour
 
         if (m_CurrentBehaviour == CurrentBehaviour.Arrive)
         {
-            UpdateAcceleration(AvoidOtherBoids(a_Boids));
+            UpdateAcceleration(AvoidOtherBoids());
             UpdateAcceleration(Arrive());
         }   
     }
@@ -183,7 +159,7 @@ public class Boid : MonoBehaviour
         targetDirection *= m_ArriveFactor;
         targetDirection = Vector3.ClampMagnitude(targetDirection, m_MaxSteeringForce);
 
-        return targetDirection;
+        return targetDirection; // DT
     }
 
     private void Flow()
@@ -196,21 +172,20 @@ public class Boid : MonoBehaviour
 
     }
 
-    private Vector3 AvoidOtherBoids(List<Boid> a_Boids)
+    private Vector3 AvoidOtherBoids()
     {
         int numberOfCloseBoids = 0;
         m_DesiredVelocity = Vector3.zero;
 
-        foreach (Boid otherBoid in a_Boids)
+        foreach (Boid otherBoid in m_OtherBoids)
         {
-            Vector3 oppositeDirection = transform.position - otherBoid.transform.position;
+            Vector3 oppositeDirection = GetPosition() - otherBoid.GetPosition();
             float distanceToOtherBoids = oppositeDirection.sqrMagnitude;
 
             if (distanceToOtherBoids > 0 && distanceToOtherBoids < m_MinimumDistanceToOtherBoid)
             {
                 numberOfCloseBoids++;
 
-                //oppositeDirection.Normalize();
                 oppositeDirection /= distanceToOtherBoids;
                 m_DesiredVelocity += oppositeDirection;
             }
@@ -223,7 +198,7 @@ public class Boid : MonoBehaviour
             m_DesiredVelocity -= m_CurrentVelocity;
             m_DesiredVelocity *= m_AvoidanceFactor;
             m_DesiredVelocity = Vector3.ClampMagnitude(m_DesiredVelocity, m_MaxSteeringForce);
-            return m_DesiredVelocity;
+            return m_DesiredVelocity; // DT
         }
 
         return Vector3.zero;
@@ -247,5 +222,10 @@ public class Boid : MonoBehaviour
         {
             IsCompatible = false;
         }
+    }
+
+    public Vector3 GetPosition()
+    {
+        return transform.position;
     }
 }

@@ -8,13 +8,13 @@ public class BoidsManager : MonoBehaviour
 
     #region BoidVariables
     [Header("Standard boid")]
-    [SerializeField, Range(0.1f, 2f)]
+    [SerializeField, Range(0.1f, 20f)]
     private float m_AccelerationFactor = 0.1f;
-    [SerializeField, Range(0.1f, 2f)]
+    [SerializeField, Range(0.1f, 20f)]
     private float m_DecelerationFactor = 0.1f;
-    [SerializeField, Range(0.1f, 2f)]
+    [SerializeField, Range(0.1f, 20f)]
     private float m_MaxVelocity = 0.1f;
-    [SerializeField, Range(0.1f, 5f)]
+    [SerializeField, Range(0.1f, 20f)]
     private float m_MaxSteeringForce = 0.1f;
     [SerializeField, Range(0f, 10f)]
     private float m_MinimumDistanceToTarget = 0.1f;
@@ -24,6 +24,8 @@ public class BoidsManager : MonoBehaviour
     private float m_ArriveFactor = 0.1f;
     [SerializeField, Range(0.1f, 10f)]
     private float m_MinimumDistanceToOtherBoid = 0.1f;
+    [SerializeField]
+    private float m_Multiplier;
 
     [Header("Close boid")]
     [SerializeField, Range(-100, 200)]
@@ -217,7 +219,7 @@ public class BoidsManager : MonoBehaviour
         Boid boid = (Boid)Instantiate(m_Boid, new Vector3(0f, m_TargetsHeight.position.y, 0f), Quaternion.identity);
         boid.transform.SetParent(m_BoidsContainer);
         boid.SetTargetByPosition(m_UnusedTargets[0]);
-        boid.SetMovementModifiers(m_AccelerationFactor, m_DecelerationFactor, m_MaxVelocity, m_MaxSteeringForce);
+        boid.SetMovementModifiers(m_AccelerationFactor, m_DecelerationFactor, m_MaxVelocity, m_MaxSteeringForce, m_Multiplier);
         boid.SetBehaviorModifiers(m_MinimumDistanceToTarget, m_AvoidanceFactor, m_MinimumDistanceToOtherBoid, m_ArriveFactor);
         boid.SetCurrentBehaviour(1);
         boid.DetermineIfCompatible();
@@ -227,6 +229,11 @@ public class BoidsManager : MonoBehaviour
 
     private void EndInitialisation()
     {
+        foreach(Boid b in Boids)
+        {
+            b.GetOtherBoids(Boids);
+        }
+
         m_Controller.enabled = true;
         m_Penis.GetComponent<Animator>().SetBool("Out", true);
         m_Penis.SetActive(true);
@@ -242,8 +249,6 @@ public class BoidsManager : MonoBehaviour
             {
                 boid.SetTarget(m_ControllerTarget);
             }
-                
-            boid.UpdateBehaviour(m_Boids);
         }
 
         if (Input.GetAxisRaw("TL_1") > 0 || !Input.GetButton("LB_1"))
@@ -325,7 +330,7 @@ public class BoidsManager : MonoBehaviour
     {
         foreach(Boid boid in m_Boids)
         {
-            boid.SetMovementModifiers(a_Acceleration, a_Deceleration, a_MaxVelocity, a_MaxSteering);
+            boid.SetMovementModifiers(a_Acceleration, a_Deceleration, a_MaxVelocity, a_MaxSteering, m_Multiplier);
         }
     }
 
