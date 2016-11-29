@@ -218,13 +218,21 @@ public class BoidsManager : MonoBehaviour
     {
         Boid boid = (Boid)Instantiate(m_Boid, new Vector3(0f, m_TargetsHeight.position.y, 0f), Quaternion.identity);
         boid.transform.SetParent(m_BoidsContainer);
-        boid.SetTargetByPosition(m_UnusedTargets[0]);
+        Boids.Add(boid);
         boid.SetMovementModifiers(m_AccelerationFactor, m_DecelerationFactor, m_MaxVelocity, m_MaxSteeringForce, m_Multiplier);
         boid.SetBehaviorModifiers(m_MinimumDistanceToTarget, m_AvoidanceFactor, m_MinimumDistanceToOtherBoid, m_ArriveFactor);
         boid.SetCurrentBehaviour(1);
         boid.DetermineIfCompatible();
-        m_UnusedTargets.RemoveAt(0);
-        Boids.Add(boid);
+
+        if (m_UnusedTargets.Count > 0)
+        {
+            boid.SetTargetByPosition(m_UnusedTargets[0]);
+            m_UnusedTargets.RemoveAt(0);
+        }
+        else
+        {
+            boid.SetTargetByPosition(Vector3.zero);
+        }
     }
 
     private void EndInitialisation()
