@@ -6,22 +6,12 @@ public class GestationController : MonoBehaviour
     private Transform m_Target;
 
     [Header("Camera parameters")]
-    [SerializeField, Range(1f, 10f)]
+    [SerializeField, Range(0f, 10f)]
     private float m_TranslationSpeed;
     [SerializeField, Range(1f, 10f)]
     private float m_Offset;
 
     private Vector3 m_CurrentLeftInput;
-
-    /*
-    private Vector3 m_CurrentRightInput;
-
-    [SerializeField, Range(0f, 10f)]
-    private float m_MinimumTargetValueZ;
-    [SerializeField, Range(10f, 20f)]
-    private float m_MaximumTargetValueZ;
-    private float m_DefaultTargetValueZ;
-    */
 
     protected void Awake()
     {

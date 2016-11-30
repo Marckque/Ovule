@@ -12,11 +12,13 @@ public class GestationManager : MonoBehaviour
 
     [Header("Text"), SerializeField]
     private Text m_RemainingDaysText;
+    [SerializeField]
     private string m_RemainingDaysString = " days left";
 
     private const int PERIOD_OF_GESTATION = 270;
+    private float secondsLeft;
 
-	protected void Start()
+    protected void Start()
     {
         if (!Manager.Instance.m_BabyIsBorn)
         {
