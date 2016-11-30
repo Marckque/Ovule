@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
 public class GestationManager : MonoBehaviour
 {
@@ -16,9 +15,8 @@ public class GestationManager : MonoBehaviour
     private string m_RemainingDaysString = " days left";
 
     private const int PERIOD_OF_GESTATION = 270;
-    private float secondsLeft;
 
-    protected void Start()
+    protected void Awake()
     {
         if (!Manager.Instance.m_BabyIsBorn)
         {
@@ -51,6 +49,10 @@ public class GestationManager : MonoBehaviour
     private void CreateBaby()
     {
         Manager.Instance.m_BabyIsBorn = true;
+        Manager.Instance.m_BabyIsOnItsWay = false;
+
+        SaveLoad.Save();
+
         SetBabyToActive();
     }
 
