@@ -1,10 +1,12 @@
 fileFormatVersion: 2
 guid: fa0c3f8a0d12e8d49a7f48861f8a8c38
-timeCreated: 1480454036
-licenseType: Free
+timeCreated: 1480511179
+licenseType: Pro
 ShaderImporter:
   defaultTextures:
-  - _node_8714: {fileID: 2800000, guid: 28c7aad1372ff114b90d330f8a2dd938, type: 3}
+  - _VertexOffsetTexture: {fileID: 2800000, guid: e958c6041cfe445e987c73751e8d4082,
+      type: 3}
+  - _TextureBlending: {fileID: 2800000, guid: 3a5a96df060a5cf4a9cc0c59e13486b7, type: 3}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
