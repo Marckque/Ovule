@@ -4,10 +4,18 @@ using UnityEngine.UI;
 
 public class GestationManager : MonoBehaviour
 {
-    [Header("Baby & Foetus"), SerializeField]
+    [Header("Camera"), SerializeField]
+    private Camera m_Camera;
+
+    [Header("Baby"), SerializeField]
     private GameObject m_Baby;
     [SerializeField]
+    private Color m_BabyBackgroundColor;
+
+    [Header("Foetus"), SerializeField]
     private GameObject m_Foetus;
+    [SerializeField]
+    private ParticleSystem m_FoetusParticles;
 
     [Header("Text"), SerializeField]
     private Text m_RemainingDaysText;
@@ -38,7 +46,7 @@ public class GestationManager : MonoBehaviour
 
         if (differenceOfDays >= PERIOD_OF_GESTATION)
         {
-            CreateBaby();
+            SetupBaby();
         }
         else
         {
@@ -46,14 +54,27 @@ public class GestationManager : MonoBehaviour
         }
     }
 
-    private void CreateBaby()
+    private void SetupBaby()
     {
+        ChangeBackgroundColor();
+        DeactivateFoetusParticles();
+
         Manager.Instance.m_BabyIsBorn = true;
         Manager.Instance.m_BabyIsOnItsWay = false;
 
         SaveLoad.Save();
 
         SetBabyToActive();
+    }
+
+    private void DeactivateFoetusParticles()
+    {
+        m_FoetusParticles.gameObject.SetActive(false);
+    }
+
+    private void ChangeBackgroundColor()
+    {
+        m_Camera.backgroundColor = m_BabyBackgroundColor;
     }
 
     private void SetBabyToActive()
