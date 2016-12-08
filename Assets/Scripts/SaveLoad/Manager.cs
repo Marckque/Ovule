@@ -13,8 +13,5 @@ public class Manager
     public Manager()
     {
         Instance = this;
-        m_BabyIsOnItsWay = new bool();
-        m_BabyIsBorn = new bool();
-        m_GestationStartDate = DateTime.UtcNow.Date.ToString();
     }
 }

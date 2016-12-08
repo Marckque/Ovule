@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Oocyte : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class Oocyte : MonoBehaviour
     private void StartGestation()
     {
         Manager.Instance.m_BabyIsOnItsWay = true;
+        Manager.Instance.m_GestationStartDate = DateTime.UtcNow.Date.ToString();
+
         SaveLoad.Save();
 
         m_FadeToBlack.SetActive(true);

@@ -26,7 +26,7 @@ public class GestationManager : MonoBehaviour
 
     protected void Awake()
     {
-        if (!Manager.Instance.m_BabyIsBorn)
+        if (!SaveLoad.m_SavedGameManager.m_BabyIsBorn)
         {
             CheckIfBabyIsBorn();
         }
@@ -38,7 +38,7 @@ public class GestationManager : MonoBehaviour
 
     private void CheckIfBabyIsBorn()
     {
-        DateTime gestationStartDate = Convert.ToDateTime(Manager.Instance.m_GestationStartDate);
+        DateTime gestationStartDate = Convert.ToDateTime(SaveLoad.m_SavedGameManager.m_GestationStartDate);
         DateTime newDate = DateTime.UtcNow.Date;
 
         TimeSpan dateDifference = newDate.Subtract(gestationStartDate);
@@ -59,8 +59,8 @@ public class GestationManager : MonoBehaviour
         ChangeBackgroundColor();
         DeactivateFoetusParticles();
 
-        Manager.Instance.m_BabyIsBorn = true;
-        Manager.Instance.m_BabyIsOnItsWay = false;
+        SaveLoad.m_SavedGameManager.m_BabyIsBorn = true;
+        SaveLoad.m_SavedGameManager.m_BabyIsOnItsWay = false;
 
         SaveLoad.Save();
 
