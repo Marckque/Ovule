@@ -25,10 +25,12 @@ public class Oocyte : MonoBehaviour
 
     private void StartGestation()
     {
-        Manager.Instance.m_BabyIsOnItsWay = true;
-        Manager.Instance.m_GestationStartDate = DateTime.UtcNow.Date.ToString();
+        Manager manager = new Manager();
 
-        SaveLoad.Save();
+        manager.m_BabyIsOnItsWay = true;
+        manager.m_GestationStartDate = DateTime.UtcNow.Date.ToString();
+
+        SaveLoad.Save(manager);
 
         m_FadeToBlack.SetActive(true);
     }

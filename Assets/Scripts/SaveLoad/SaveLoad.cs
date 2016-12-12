@@ -11,9 +11,12 @@ public static class SaveLoad
     public static Manager m_SavedGameManager;
     public static string path = "/savedGameManager.sgm";
 
-    public static void Save()
+    public static void Save(Manager a_Manager)
     {
-        m_SavedGameManager = Manager.Instance;
+        if (a_Manager != null)
+        {
+            m_SavedGameManager = a_Manager;
+        }
 
         Debug.Log("====== SAVE ======");
         Debug.Log("m_SavedGameManager: " + m_SavedGameManager);
