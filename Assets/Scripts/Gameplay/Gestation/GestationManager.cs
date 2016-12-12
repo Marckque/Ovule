@@ -62,6 +62,7 @@ public class GestationManager : MonoBehaviour
         SaveLoad.m_SavedGameManager.m_BabyIsBorn = true;
         SaveLoad.m_SavedGameManager.m_BabyIsOnItsWay = false;
 
+        // A bit dangerous... !
         SaveLoad.Save(null);
 
         SetBabyToActive();

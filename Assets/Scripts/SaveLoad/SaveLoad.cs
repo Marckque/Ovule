@@ -2,8 +2,6 @@
 
 using System.IO;
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 
 public static class SaveLoad
@@ -17,12 +15,6 @@ public static class SaveLoad
         {
             m_SavedGameManager = a_Manager;
         }
-
-        Debug.Log("====== SAVE ======");
-        Debug.Log("m_SavedGameManager: " + m_SavedGameManager);
-        Debug.Log("m_SavedGameManager.m_BabyIsBorn: " + m_SavedGameManager.m_BabyIsBorn);
-        Debug.Log("m_SavedGameManager.m_BabyIsOnItsWay: " + m_SavedGameManager.m_BabyIsOnItsWay);
-        Debug.Log("m_SavedGameManager.m_GestationStartDate: " + m_SavedGameManager.m_GestationStartDate);
 
         BinaryFormatter binaryFormatter = new BinaryFormatter();
         FileStream fileStream = File.Create(Application.persistentDataPath + path);
@@ -41,12 +33,6 @@ public static class SaveLoad
             m_SavedGameManager = (Manager) binaryFormatter.Deserialize(fileStream);
 
             fileStream.Close();
-
-            Debug.Log("====== LOAD ======");
-            Debug.Log("m_SavedGameManager: " + m_SavedGameManager);
-            Debug.Log("m_SavedGameManager.m_BabyIsBorn: " + m_SavedGameManager.m_BabyIsBorn);
-            Debug.Log("m_SavedGameManager.m_BabyIsOnItsWay: " + m_SavedGameManager.m_BabyIsOnItsWay);
-            Debug.Log("m_SavedGameManager.m_GestationStartDate: " + m_SavedGameManager.m_GestationStartDate);
 
             return true;
         }
