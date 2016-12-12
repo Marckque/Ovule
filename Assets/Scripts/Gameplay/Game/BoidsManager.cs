@@ -273,6 +273,7 @@ public class BoidsManager : MonoBehaviour
             SetNewModifiers(2);
         }
 
+        /*
         if (Input.GetButtonDown("A_1"))
         {
             if (m_BoidsBehaviour == 0)
@@ -284,6 +285,7 @@ public class BoidsManager : MonoBehaviour
                 SetBoidBehaviour(0);
             }
         }
+        */
     }
 
     #region BoidsBehavior
