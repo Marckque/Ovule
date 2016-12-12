@@ -31,7 +31,6 @@ public class Boid : MonoBehaviour
     #endregion Variables
 
     #region PublicGetters
-    public bool IsCompatible { get; set; }
     #endregion PublicGetters
 
     #region DefineVariables
@@ -209,19 +208,6 @@ public class Boid : MonoBehaviour
     {
         BoidsManager.Instance.Boids.Remove(this);
         Destroy(gameObject);
-    }
-
-    public void DetermineIfCompatible()
-    {
-        int randomNumber = Random.Range(0, 10);
-        if (randomNumber < 2)
-        {
-            IsCompatible = true;
-        }
-        else
-        {
-            IsCompatible = false;
-        }
     }
 
     public Vector3 GetPosition()

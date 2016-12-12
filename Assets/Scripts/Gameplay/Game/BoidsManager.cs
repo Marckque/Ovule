@@ -222,7 +222,6 @@ public class BoidsManager : MonoBehaviour
         boid.SetMovementModifiers(m_AccelerationFactor, m_DecelerationFactor, m_MaxVelocity, m_MaxSteeringForce, m_Multiplier);
         boid.SetBehaviorModifiers(m_MinimumDistanceToTarget, m_AvoidanceFactor, m_MinimumDistanceToOtherBoid, m_ArriveFactor);
         boid.SetCurrentBehaviour(1);
-        boid.DetermineIfCompatible();
 
         if (m_UnusedTargets.Count > 0)
         {

@@ -56,13 +56,10 @@ public class GestationManager : MonoBehaviour
 
     private void SetupBaby()
     {
-        ChangeBackgroundColor();
-        DeactivateFoetusParticles();
-
         SaveLoad.m_SavedGameManager.m_BabyIsBorn = true;
         SaveLoad.m_SavedGameManager.m_BabyIsOnItsWay = false;
 
-        // A bit dangerous... !
+        // A bit dangerous... ?
         SaveLoad.Save(null);
 
         SetBabyToActive();
@@ -80,6 +77,8 @@ public class GestationManager : MonoBehaviour
 
     private void SetBabyToActive()
     {
+        ChangeBackgroundColor();
+        DeactivateFoetusParticles();
         m_Baby.SetActive(true);
     }
 

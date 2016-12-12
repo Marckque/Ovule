@@ -12,14 +12,7 @@ public class Oocyte : MonoBehaviour
 
         if (boid)
         {
-            if (boid.IsCompatible)
-            {
-                StartGestation();
-            }
-            else
-            {
-                boid.Dies();
-            }
+            StartGestation();
         }
     }
 
