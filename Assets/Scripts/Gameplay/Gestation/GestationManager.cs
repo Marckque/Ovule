@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class GestationManager : MonoBehaviour
 {
+    #region Variables
     [Header("Camera"), SerializeField]
     private Camera m_Camera;
 
@@ -15,12 +16,15 @@ public class GestationManager : MonoBehaviour
     [Header("Foetus"), SerializeField]
     private GameObject m_Foetus;
     [SerializeField]
+    private MeshRenderer m_FoetusMeshRenderer;
+    [SerializeField]
     private ParticleSystem m_FoetusParticles;
 
     [Header("Text"), SerializeField]
     private Text m_RemainingDaysText;
     [SerializeField]
     private string m_RemainingDaysString = " days left";
+    #endregion Variables
 
     private const int PERIOD_OF_GESTATION = 270;
 
@@ -33,8 +37,8 @@ public class GestationManager : MonoBehaviour
         else
         {
             SetBabyToActive();
-        }            
-	}
+        }
+    }
 
     private void CheckIfBabyIsBorn()
     {
@@ -82,18 +86,24 @@ public class GestationManager : MonoBehaviour
         m_Baby.SetActive(true);
     }
 
-    private void SetFoetusToActive()
-    {
-        m_Foetus.SetActive(true);
-    }
-
     private void UpdateRemainingDays(int a_DifferenceOfDays)
     {
-        SetFoetusToActive();
+        SetFoetusToActive(a_DifferenceOfDays);
 
         int remainingDays = PERIOD_OF_GESTATION - a_DifferenceOfDays;
         m_RemainingDaysText.text = remainingDays + m_RemainingDaysString;
 
         m_RemainingDaysText.gameObject.SetActive(true);
+    }
+
+    private void SetFoetusToActive(int a_DifferenceOfDays)
+    {
+        Material foetusMaterial = m_FoetusMeshRenderer.material;
+        float newVertexOffsetHeight = a_DifferenceOfDays;
+        newVertexOffsetHeight = ExtensionMethods.Remap(newVertexOffsetHeight, 0f, 270f, 0.5f, 2.5f);
+
+        foetusMaterial.SetFloat("_VertexOffsetHeight", newVertexOffsetHeight);
+
+        m_Foetus.SetActive(true);
     }
 }
