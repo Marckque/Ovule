@@ -2,65 +2,76 @@
 
 public class GestationController : MonoBehaviour
 {
-    [Header("Target"), SerializeField]
-    private Transform m_Target;
+    [Header("Sounds"), SerializeField]
+    private AudioSource m_AudioSource;
+    [SerializeField]
+    private AudioClip[] m_Sounds;
 
-    [Header("Camera parameters")]
-    [SerializeField, Range(0f, 10f)]
-    private float m_TranslationSpeed;
-    [SerializeField, Range(1f, 10f)]
-    private float m_Offset;
+    private AudioClip[] m_SelectedSounds;
+    private AudioClip m_CurrentSound;
 
-    private Vector3 m_CurrentLeftInput;
-
-    protected void Awake()
+    private bool m_PlaySound;
+         
+    private void Start()
     {
-        //m_DefaultTargetValueZ = m_Target.transform.position.z;
+        AssociateSounds();
     }
 
-    protected void Update()
+    private void AssociateSounds()
     {
-        MoveCamera();
+        m_SelectedSounds = new AudioClip[m_Sounds.Length];
+
+        for (int i = 0; i < m_Sounds.Length; i++)
+        {
+            m_SelectedSounds[i] = m_Sounds[i];
+        }           
     }
 
-    private void MoveCamera()
+    private void Update()
     {
-        m_CurrentLeftInput = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0f).normalized;
-        //m_CurrentRightInput = new Vector3(0f, 0f, Input.GetAxis("R_YAxis_1")).normalized;
-
-        UpdateCameraPosition();
-        UpdateCameraAngle();
+        CheckControls();
+        PlaySound();
     }
 
-    private void UpdateCameraPosition()
+	private void CheckControls()
     {
-        if (m_CurrentLeftInput != Vector3.zero)
+        if (!m_AudioSource.isPlaying)
         {
-            transform.position = Vector3.Lerp(transform.position, Vector3.zero + m_CurrentLeftInput * m_Offset, m_TranslationSpeed * Time.deltaTime);
-        }
-        else
-        {
-            transform.position = Vector3.Lerp(transform.position, Vector3.zero, m_TranslationSpeed * Time.deltaTime);
-        }
-
-        /*
-        if (m_CurrentRightInput.z > 0f)
-        {
-            m_Target.transform.position = Vector3.Lerp(m_Target.transform.position, new Vector3(0f, 0f, m_MinimumTargetValueZ), m_TranslationSpeed * Time.deltaTime);
-        }
-        else if (m_CurrentRightInput.z < 0f)
-        {
-            m_Target.transform.position = Vector3.Lerp(m_Target.transform.position, new Vector3(0f, 0f, m_MaximumTargetValueZ), m_TranslationSpeed * Time.deltaTime);
-        }
-        else
-        {
-            m_Target.transform.position = Vector3.Lerp(m_Target.transform.position, new Vector3(0f, 0f, m_DefaultTargetValueZ), m_TranslationSpeed * Time.deltaTime);
-        }
-        */
+            if (Input.GetButtonDown("A_1"))
+            {
+                m_CurrentSound = m_SelectedSounds[0];
+                m_PlaySound = true;
+            }
+            else if (Input.GetButtonDown("B_1"))
+            {
+                m_CurrentSound = m_SelectedSounds[1];
+                m_PlaySound = true;
+            }
+            else if (Input.GetButtonDown("X_1"))
+            {
+                m_CurrentSound = m_SelectedSounds[2];
+                m_PlaySound = true;
+            }
+            else if (Input.GetButtonDown("Y_1"))
+            {
+                m_CurrentSound = m_SelectedSounds[3];
+                m_PlaySound = true;
+            }
+        }   
     }
 
-    private void UpdateCameraAngle()
+    private void PlaySound()
     {
-        transform.LookAt(m_Target.position);
+        if (m_PlaySound)
+        {
+            m_AudioSource.clip = m_CurrentSound;
+
+            if (!m_AudioSource.isPlaying)
+            {
+                m_AudioSource.Play();
+            }
+
+            m_PlaySound = false;
+        }
     }
 }

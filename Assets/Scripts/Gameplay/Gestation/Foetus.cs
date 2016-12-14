@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
 
-public class Foetus : MonoBehaviour
+public class Foetus : GestationController
 {
 }
