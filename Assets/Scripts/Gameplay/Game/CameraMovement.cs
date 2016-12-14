@@ -13,7 +13,7 @@ public class CameraMovement : MonoBehaviour
     
     protected void Start()
     {
-        m_NewCameraHeight = m_Target.position.y + m_HeightOffset;
+        UpdateCameraHeight();
     }
 
     protected void Update()
@@ -23,7 +23,13 @@ public class CameraMovement : MonoBehaviour
 
     private void UpdatePosition()
     {
+        UpdateCameraHeight();
         Vector3 newPosition = new Vector3(m_Target.transform.position.x, m_NewCameraHeight, m_Target.transform.position.z);
         transform.position = Vector3.LerpUnclamped(transform.position, newPosition, m_CameraLerpSpeed * Time.deltaTime);
+    }
+
+    private void UpdateCameraHeight()
+    {
+        m_NewCameraHeight = m_Target.position.y + m_HeightOffset;
     }
 }

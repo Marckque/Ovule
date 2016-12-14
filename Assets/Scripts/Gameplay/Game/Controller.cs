@@ -14,6 +14,11 @@ public class Controller : MonoBehaviour
     [SerializeField]
     private AnimationCurve m_DecelerationCurve;
 
+    [SerializeField]
+    private float spd;
+
+    private bool test;
+
     private AnimationCurve m_VelocityCurve;
     private float m_AccelerationTime;
     private float m_DecelerationTime;
@@ -42,7 +47,7 @@ public class Controller : MonoBehaviour
     private void CheckControls()
     {
         ControllerMovement();
-        TargetMovement();
+        //TargetMovement();
     }
     #endregion CheckControls
 
@@ -57,10 +62,18 @@ public class Controller : MonoBehaviour
         {
             m_DecelerationTime = 0;
             m_AccelerationTime += Time.deltaTime;
+
             m_LastLeftInput = m_CurrentLeftInput;
         }
-        else
+        
+        else if (test)
         {
+            m_DecelerationTime = 0;
+            m_AccelerationTime += Time.deltaTime;
+        }
+
+        else
+        { 
             m_AccelerationTime = 0;
             m_DecelerationTime += Time.deltaTime;
         }
@@ -69,6 +82,8 @@ public class Controller : MonoBehaviour
         m_VelocityTime = m_AccelerationTime > 0 ? m_AccelerationTime : m_DecelerationTime;
 
         m_Velocity = m_MaxVelocity * m_VelocityCurve.Evaluate(m_VelocityTime);
+
+        DepthMovement();
 
         transform.Translate(m_LastLeftInput.normalized * m_Velocity * Time.deltaTime);
     }
@@ -80,16 +95,45 @@ public class Controller : MonoBehaviour
             m_MaxVelocity = m_CloseVelocity;
         }
         else if (Input.GetAxisRaw("TL_1") > 0)
-        {
+        {   
             m_MaxVelocity = m_LargeVelocity;
         }
         else
-        {
+        {  
             m_MaxVelocity = m_NormalVelocity;
         }
     }
+
+    // Pas la bonne implémentation pour matcher les contrôles actuels
+    private void DepthMovement()
+    {
+        Vector3 depthMovement = new Vector3(0f, Input.GetAxis("R_YAxis_1"), 0f);
+
+        /*
+        if (Input.GetButton("RB_1"))
+        {
+            //test = true;
+            //m_LastLeftInput.y = spd;
+            depthMovement.y = spd;
+        }
+        else if (Input.GetAxisRaw("TR_1") > 0)
+        {
+            //test = true;
+            //m_LastLeftInput.y = -spd;
+            depthMovement.y = -spd;
+        }
+        else
+        {
+            //test = false;
+            //m_LastLeftInput.y = 0;
+            depthMovement.y = 0;
+        }
+        */
+        transform.Translate(depthMovement.normalized * m_MaxVelocity * Time.deltaTime);
+    }
     #endregion ControllerControls
 
+    /*
     #region TargetControls
     private void TargetMovement()
     {
@@ -106,4 +150,5 @@ public class Controller : MonoBehaviour
         }
     }
     #endregion TargetControls
+    */
 }
