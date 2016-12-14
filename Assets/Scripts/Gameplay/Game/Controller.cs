@@ -14,11 +14,6 @@ public class Controller : MonoBehaviour
     [SerializeField]
     private AnimationCurve m_DecelerationCurve;
 
-    [SerializeField]
-    private float spd;
-
-    private bool test;
-
     private AnimationCurve m_VelocityCurve;
     private float m_AccelerationTime;
     private float m_DecelerationTime;
@@ -65,15 +60,8 @@ public class Controller : MonoBehaviour
 
             m_LastLeftInput = m_CurrentLeftInput;
         }
-        
-        else if (test)
-        {
-            m_DecelerationTime = 0;
-            m_AccelerationTime += Time.deltaTime;
-        }
-
         else
-        { 
+        {
             m_AccelerationTime = 0;
             m_DecelerationTime += Time.deltaTime;
         }
