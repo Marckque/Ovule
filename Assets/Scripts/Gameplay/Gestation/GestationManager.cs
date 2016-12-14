@@ -99,10 +99,14 @@ public class GestationManager : MonoBehaviour
     private void SetFoetusToActive(int a_DifferenceOfDays)
     {
         Material foetusMaterial = m_FoetusMeshRenderer.material;
+
         float newVertexOffsetHeight = a_DifferenceOfDays;
         newVertexOffsetHeight = ExtensionMethods.Remap(newVertexOffsetHeight, 0f, 270f, 0.5f, 2.5f);
-
         foetusMaterial.SetFloat("_VertexOffsetHeight", newVertexOffsetHeight);
+
+        float newVertexOffsetSpeed = a_DifferenceOfDays;
+        newVertexOffsetSpeed = ExtensionMethods.Remap(newVertexOffsetSpeed, 0f, 270f, 0.005f, 0.03f);
+        foetusMaterial.SetFloat("_VertexOffsetSpeed", newVertexOffsetSpeed);
 
         m_Foetus.SetActive(true);
     }
