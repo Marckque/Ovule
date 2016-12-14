@@ -5,13 +5,17 @@ public class GameManager : MonoBehaviour
 {
     [Header("Oocytes"), SerializeField]
     private Oocyte[] m_Oocytes;
-
-    [Header("Dates"), SerializeField]
-    private int[] m_OocyteDays;
     [SerializeField]
-    private int[] m_MenstruatingDays;
+    private int[] m_OocyteDays;
+    
+    [Header("Menstruation"), SerializeField]
+    private Camera m_Camera;
+    [SerializeField]
+    private Color m_MenstruationColor;
+    [SerializeField]
+    private int[] m_MenstruationDays;
 
-    protected void Start()
+    protected void Awake()
     {
         CheckCurrentDate();
     }
@@ -29,7 +33,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        foreach(int day in m_MenstruatingDays)
+        foreach(int day in m_MenstruationDays)
         {
             if (currentDay == day)
             {
@@ -47,6 +51,6 @@ public class GameManager : MonoBehaviour
 
     private void SetMenstruatingToActive()
     {
-        Camera.main.backgroundColor = Color.red;
+        m_Camera.backgroundColor = Color.red;
     }
 }
