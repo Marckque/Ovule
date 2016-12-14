@@ -257,7 +257,7 @@ public class BoidsManager : MonoBehaviour
             }
         }
 
-        if (Input.GetAxisRaw("TL_1") > 0 || !Input.GetButton("LB_1"))
+        if (Input.GetAxisRaw("LT_1") > 0 || !Input.GetButton("LB_1"))
         {
             SetNewModifiers(0);
         }
@@ -267,7 +267,7 @@ public class BoidsManager : MonoBehaviour
             SetNewModifiers(1);
         }
 
-        if (Input.GetAxisRaw("TL_1") > 0)
+        if (Input.GetAxisRaw("LT_1") > 0)
         {
             SetNewModifiers(2);
         }
