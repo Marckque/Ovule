@@ -19,6 +19,14 @@ public class GestationManager : MonoBehaviour
     private MeshRenderer m_FoetusMeshRenderer;
     [SerializeField]
     private ParticleSystem m_FoetusParticles;
+    [Header("Foetus' shader"), SerializeField, Range(0.5f, 4f)]
+    private float m_MinimumVertexOffsetHeight = 0.5f;
+    [SerializeField, Range(0.5f, 4f)]
+    private float m_MaximumVertexOffsetHeight = 2.5f;
+    [SerializeField, Range(0.001f, 0.05f)]
+    private float m_MinimumVertexOffsetSpeed = 0.005f;
+    [SerializeField, Range(0.001f, 0.05f)]
+    private float m_MaximumVertexOffsetSpeed = 0.03f;
 
     [Header("Text"), SerializeField]
     private Text m_RemainingDaysText;
@@ -27,6 +35,7 @@ public class GestationManager : MonoBehaviour
     #endregion Variables
 
     private const int PERIOD_OF_GESTATION = 270;
+    private int m_DifferenceOfDays;
 
     protected void Awake()
     {
@@ -42,20 +51,25 @@ public class GestationManager : MonoBehaviour
 
     private void CheckIfBabyIsBorn()
     {
-        DateTime gestationStartDate = Convert.ToDateTime(SaveLoad.m_SavedGameManager.m_GestationStartDate);
-        DateTime newDate = DateTime.UtcNow.Date;
+        SetDifferenceOfDays();
 
-        TimeSpan dateDifference = newDate.Subtract(gestationStartDate);
-        int differenceOfDays = (int)dateDifference.TotalDays;
-
-        if (differenceOfDays >= PERIOD_OF_GESTATION)
+        if (m_DifferenceOfDays >= PERIOD_OF_GESTATION)
         {
             SetupBaby();
         }
         else
         {
-            UpdateRemainingDays(differenceOfDays);
+            UpdateRemainingDays();
         }
+    }
+
+    private void SetDifferenceOfDays()
+    {
+        DateTime gestationStartDate = Convert.ToDateTime(SaveLoad.m_SavedGameManager.m_GestationStartDate);
+        DateTime newDate = DateTime.UtcNow.Date;
+
+        TimeSpan dateDifference = newDate.Subtract(gestationStartDate);
+        m_DifferenceOfDays = (int)dateDifference.TotalDays;
     }
 
     private void SetupBaby()
@@ -86,28 +100,35 @@ public class GestationManager : MonoBehaviour
         m_Baby.SetActive(true);
     }
 
-    private void UpdateRemainingDays(int a_DifferenceOfDays)
+    private void UpdateRemainingDays()
     {
-        SetFoetusToActive(a_DifferenceOfDays);
+        SetFoetusToActive();
 
-        int remainingDays = PERIOD_OF_GESTATION - a_DifferenceOfDays;
+        int remainingDays = PERIOD_OF_GESTATION - m_DifferenceOfDays;
         m_RemainingDaysText.text = remainingDays + m_RemainingDaysString;
 
         m_RemainingDaysText.gameObject.SetActive(true);
     }
 
-    private void SetFoetusToActive(int a_DifferenceOfDays)
+    private void SetFoetusToActive()
+    {
+        UpdateFoetus();
+
+        m_Foetus.SetActive(true);
+    }
+
+    private void UpdateFoetus()
     {
         Material foetusMaterial = m_FoetusMeshRenderer.material;
 
-        float newVertexOffsetHeight = a_DifferenceOfDays;
-        newVertexOffsetHeight = ExtensionMethods.Remap(newVertexOffsetHeight, 0f, 270f, 0.5f, 2.5f);
+        // Vertex offset height
+        float newVertexOffsetHeight = m_DifferenceOfDays;
+        newVertexOffsetHeight = ExtensionMethods.Remap(newVertexOffsetHeight, 0f, 270f, m_MinimumVertexOffsetHeight, m_MaximumVertexOffsetHeight);
         foetusMaterial.SetFloat("_VertexOffsetHeight", newVertexOffsetHeight);
 
-        float newVertexOffsetSpeed = a_DifferenceOfDays;
-        newVertexOffsetSpeed = ExtensionMethods.Remap(newVertexOffsetSpeed, 0f, 270f, 0.005f, 0.03f);
+        // Vertex offset speed
+        float newVertexOffsetSpeed = m_DifferenceOfDays;
+        newVertexOffsetSpeed = ExtensionMethods.Remap(newVertexOffsetSpeed, 0f, 270f, m_MinimumVertexOffsetSpeed, m_MaximumVertexOffsetSpeed);
         foetusMaterial.SetFloat("_VertexOffsetSpeed", newVertexOffsetSpeed);
-
-        m_Foetus.SetActive(true);
     }
 }
