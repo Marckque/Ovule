@@ -9,7 +9,7 @@ public class BoidKiller : MonoBehaviour
         if (boid != null)
         {
             BoidsManager.Instance.Boids.Remove(boid);
-            Destroy(gameObject);
+            Destroy(boid.gameObject);
         }
     }
 }
