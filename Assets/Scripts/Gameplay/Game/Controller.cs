@@ -14,6 +14,8 @@ public class Controller : MonoBehaviour
     [SerializeField]
     private AnimationCurve m_DecelerationCurve;
     [SerializeField]
+    private float m_MovementRadius;
+    [SerializeField]
     private float m_MinimumHeight;
     [SerializeField]
     private float m_MaximumHeight;
@@ -104,11 +106,11 @@ public class Controller : MonoBehaviour
     {
         Vector3 depthMovement = Vector3.zero;
 
-        if (Input.GetButton("RB_1") && GetCurrentHeight() < m_MaximumHeight)
+        if (Input.GetButton("RB_1") && GetCurrentHeight() < m_MovementRadius)
         {
             depthMovement.y = 1;
         }
-        else if (Input.GetAxisRaw("RT_1") > 0 && GetCurrentHeight() > m_MinimumHeight)
+        else if (Input.GetAxisRaw("RT_1") > 0 && GetCurrentHeight() > -m_MovementRadius)
         {
             depthMovement.y = -1;
         }

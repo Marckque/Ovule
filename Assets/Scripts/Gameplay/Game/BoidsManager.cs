@@ -160,11 +160,12 @@ public class BoidsManager : MonoBehaviour
         for (int i = 0; i < numberOfTargets; i++)
         {
             float x = m_DistanceOfTargets * Mathf.Cos(i);
+            float y = Random.Range(-1.5f, 1.5f);
             float z = m_DistanceOfTargets * Mathf.Sin(i);
 
             m_DistanceOfTargets += Random.Range(-1f, 1f); // Find a better way dude
 
-            m_Targets[i] = new Vector3(center.x + x, m_TargetsHeight.position.y, center.z + z);
+            m_Targets[i] = new Vector3(center.x + x, m_TargetsHeight.position.y + y, center.z + z);
             Debug.DrawLine(center, m_Targets[i], Color.cyan, 10f);
         }
 
