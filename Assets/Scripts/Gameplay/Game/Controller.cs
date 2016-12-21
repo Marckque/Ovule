@@ -13,6 +13,10 @@ public class Controller : MonoBehaviour
     private AnimationCurve m_AccelerationCurve;
     [SerializeField]
     private AnimationCurve m_DecelerationCurve;
+    [SerializeField]
+    private float m_MinimumHeight;
+    [SerializeField]
+    private float m_MaximumHeight;
 
     private AnimationCurve m_VelocityCurve;
     private float m_AccelerationTime;
@@ -100,11 +104,11 @@ public class Controller : MonoBehaviour
     {
         Vector3 depthMovement = Vector3.zero;
 
-        if (Input.GetButton("RB_1"))
+        if (Input.GetButton("RB_1") && GetCurrentHeight() < m_MaximumHeight)
         {
             depthMovement.y = 1;
         }
-        else if (Input.GetAxisRaw("RT_1") > 0)
+        else if (Input.GetAxisRaw("RT_1") > 0 && GetCurrentHeight() > m_MinimumHeight)
         {
             depthMovement.y = -1;
         }
@@ -114,6 +118,11 @@ public class Controller : MonoBehaviour
         }
 
         transform.Translate(depthMovement.normalized * m_DepthVelocity * Time.deltaTime);
+    }
+    
+    private float GetCurrentHeight()
+    {
+        return transform.position.y;
     }
     #endregion ControllerControls
 
