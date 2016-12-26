@@ -15,10 +15,6 @@ public class Controller : MonoBehaviour
     private AnimationCurve m_DecelerationCurve;
     [SerializeField]
     private float m_MovementRadius;
-    [SerializeField]
-    private float m_MinimumHeight;
-    [SerializeField]
-    private float m_MaximumHeight;
 
     private AnimationCurve m_VelocityCurve;
     private float m_AccelerationTime;

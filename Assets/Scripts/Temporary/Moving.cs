@@ -27,15 +27,17 @@ public class Moving : MonoBehaviour
 
         if (distance <= m_MovingLerpSpeed * Time.deltaTime)
         {
-            SetCurrentDestination();
+            //SetCurrentDestination();
         }
     }
 
+    /*
     private void SetCurrentDestination() // What ? 
     {
         bool newDestination = m_CurrentDestination == m_StartPosition ?
             m_CurrentDestination = m_EndPosition : m_CurrentDestination = m_StartPosition;
     }
+    */
 
     protected void OnDrawGizmos()
     {
