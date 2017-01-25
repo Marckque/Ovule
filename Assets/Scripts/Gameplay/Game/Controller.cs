@@ -22,7 +22,7 @@ public class Controller : MonoBehaviour
     private float m_VelocityTime;
     private float m_DepthVelocity;
     private float m_MaxVelocity;
-    private float m_Velocity;
+    private float m_VelocityMagnitude;
     private Vector3 m_CurrentLeftInput;
     private Vector3 m_LastLeftInput;
 
@@ -72,11 +72,11 @@ public class Controller : MonoBehaviour
         m_VelocityCurve = m_CurrentLeftInput != Vector3.zero ? m_AccelerationCurve : m_DecelerationCurve;
         m_VelocityTime = m_AccelerationTime > 0 ? m_AccelerationTime : m_DecelerationTime;
 
-        m_Velocity = m_MaxVelocity * m_VelocityCurve.Evaluate(m_VelocityTime);
+        m_VelocityMagnitude = m_MaxVelocity * m_VelocityCurve.Evaluate(m_VelocityTime);
 
         DepthMovement();
 
-        transform.Translate(m_LastLeftInput.normalized * m_Velocity * Time.deltaTime);
+        transform.Translate(m_LastLeftInput.normalized * m_VelocityMagnitude * Time.deltaTime);
     }
 
     private void UpdateMaxVelocity()
@@ -140,4 +140,9 @@ public class Controller : MonoBehaviour
         }
     }
     #endregion TargetControls
+
+    public Vector3 GetVelocity()
+    {
+        return m_LastLeftInput.normalized * m_VelocityMagnitude;
+    }
 }
