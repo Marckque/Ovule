@@ -51,6 +51,6 @@ public class GameManager : MonoBehaviour
 
     private void SetMenstruatingToActive()
     {
-        m_Camera.backgroundColor = Color.red;
+        m_Camera.backgroundColor = m_MenstruationColor;
     }
 }

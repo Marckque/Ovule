@@ -81,12 +81,12 @@ public class Controller : MonoBehaviour
 
     private void UpdateMaxVelocity()
     {
-        if (Input.GetButton("LB_1"))
+        if (Input.GetButton("LB_1") || Input.GetKey(KeyCode.V))
         {
             m_MaxVelocity = m_CloseVelocity;
             m_DepthVelocity = m_CloseVelocity;
         }
-        else if (Input.GetAxisRaw("LT_1") > 0)
+        else if (Input.GetAxisRaw("LT_1") > 0 || Input.GetKey(KeyCode.B))
         {   
             m_MaxVelocity = m_LargeVelocity;
             m_DepthVelocity = m_LargeVelocity;
